@@ -3,11 +3,20 @@ import { Usuario } from "../models/Usuarios.js"
 
 export const existeCorreo = async(correo) => {
 
-    const user = await Usuario.findOne({correo});
+    const users = await Usuario.find({correo});
     
-    if( user ){
-        throw new Error('Este correo no se puede registar porque existe en la Base de Datos');
+
+    //Verificar si el usuario existe
+    if( users.length === 0){
+        return true; //Si no exite retorno true para poder regitrarlo
     } 
+
+    //Verificar el estado del usuario
+    users.forEach(usuario =>{
+        if (usuario.estado) {
+            throw new Error('Este correo no se puede registar porque existe en la Base de Datos');
+        }
+    });
 
     return true;
 

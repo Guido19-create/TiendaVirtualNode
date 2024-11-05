@@ -2,6 +2,8 @@ import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import { Usuario } from "../models/Usuarios.js";
 import { hashearPass } from "../helpers/hashearPassword.js";
+import { obtenerRol } from "../helpers/asignar-rol.js";
+import { Rol } from "../models/Roles.js"
 
 export const registrar = async (req, res) => {
   //Extraer los datos
@@ -11,8 +13,16 @@ export const registrar = async (req, res) => {
 
   const passwordEncriptada = hashearPass(password);
 
-  const usuario = new Usuario({ correo, password: passwordEncriptada });
+  //const idRol = obtenerRol("CLIENTE");
+  const idRolBuscado = await Rol.findOne({nombre:"CLIENTE"});
 
+  //Asignar rol por defecto
+  const usuario = new Usuario({ 
+    correo, 
+    password: passwordEncriptada,
+    rol:[idRolBuscado]
+  });
+  
   //Guardar los datos en la base de datos
   try {
     await usuario.save();
@@ -33,6 +43,8 @@ export const iniciarSesion = async (req, res) => {
 
   const usuario = await Usuario.findOne({ correo });
 
+  const id = usuario._id; //Obtengo el id
+
   //Verificar que el correo exista
   if (!usuario) {
     return res.status(401).json({ msg: "Acceso Denegado - correo o la contraseña incorrectos" });
@@ -45,7 +57,7 @@ export const iniciarSesion = async (req, res) => {
 
   if (isEqualsPassword) {
     //Generar jwt
-    const token = jsonwebtoken.sign({ correo }, process.env.CLAVE_SECRETA, {
+    const token = jsonwebtoken.sign({ _id: id, correo }, process.env.CLAVE_SECRETA, {
       expiresIn: "1h",
     });
     return res.status(200).json({ msg: "Usuario logeado correctamente" ,token});

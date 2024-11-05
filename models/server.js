@@ -5,6 +5,7 @@ import {fileURLToPath} from 'url'
 import {router} from '../routers/auth.js'
 import {router as UsuarioRutas}  from '../routers/UsuarioRouters.js';
 import { conexionDB } from '../database/config.js'
+import fileUpload from 'express-fileupload';
 
 dotenv.config()
 
@@ -20,7 +21,7 @@ export class Server{
 
         //Rutas urls de la api
         this.paths = {
-            auth:'/api/auth',
+            auth:        '/api/auth',
             crudUsuario: '/api/Usuario'
         }
 
@@ -45,6 +46,11 @@ export class Server{
     //Middlewares
     Middlewares(){
         this.app.use(express.json())
+        this.app.use(fileUpload({
+            createParentPath:true,
+            useTempFiles: true,
+            tempFileDir: '/temp/'
+        }));
 
     }
 

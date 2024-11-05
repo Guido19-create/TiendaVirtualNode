@@ -4,8 +4,7 @@ import {model,Schema} from "mongoose";
 const UsuarioSchema = new Schema({
     correo:{ 
         type:String, 
-        required:true,
-        unique:true
+        required:true
     },
     password: {
         type: String,
@@ -13,13 +12,15 @@ const UsuarioSchema = new Schema({
     },
     numeroDeTelefono:{type:String},
     fotoDePerfil:{ type: String },
-    rol:[{type: Schema.Types.ObjectId, ref: 'Roles'}],
+    estado: {type: Boolean, default: true},
+    rol:[{type: Schema.Types.ObjectId, ref: 'Rol'}],
     Pedidos: [{type: Schema.Types.ObjectId, ref: 'Pedidos'}]
 });
 
 UsuarioSchema.methods.toJSON = function () {
     const user = this.toObject();
     delete user.password;
+    delete user.__v
     return user;
 };
 
