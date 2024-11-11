@@ -33,3 +33,27 @@ export const validarID = async( req, res, next ) => {
 
 };
 
+
+//Este middleware es para el apartado de la autenticacion osea del login
+export const buscarSiExisteUsuario = async( req, res, next ) => {
+
+    const { correo } = req.body;
+
+    const users = await Usuario.find({correo});
+    
+
+    //Verificar si el usuario existe
+    if( users.length === 0){
+        return res.status(400).json({msg: 'El correo o la contraseña son invalidos'})  //El Usuario no existe
+    } 
+    
+    //Verificar el estado del usuario
+    for(let usuario of users){
+        if (usuario.estado) {
+            return next();
+        }
+    }
+    
+    res.status(400).json({msg: 'El correo o la contraseña son invalidos'})  //El Usuario no existe
+}
+

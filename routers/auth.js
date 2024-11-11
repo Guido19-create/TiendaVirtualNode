@@ -3,7 +3,7 @@ import { check } from "express-validator";
 import { iniciarSesion, registrar} from "../controllers/auth.controllers.js";
 import { resultadoValidaciones } from "../middlewares/resultado-validaciones.js";
 import { existeCorreo } from "../helpers/validar-email.js";
-
+import { buscarSiExisteUsuario } from "../middlewares/existe-Usuario.js";
 
 const router = Router()
 
@@ -26,6 +26,7 @@ router.post('/login',[
    check('correo','El correo es obligatorio').not().isEmpty(),
    check('password','La contraseña es obligatoria').not().isEmpty(),
    check('correo','El correo no es un email valido').isEmail(),
+   buscarSiExisteUsuario,
    resultadoValidaciones
 ], iniciarSesion);
 

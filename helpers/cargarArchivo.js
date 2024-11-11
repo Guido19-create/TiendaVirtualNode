@@ -1,18 +1,40 @@
-import cloudinary from 'cloudinary';
-cloudinary.config(process.env.CLOUDINARY_URL);
+import cloudinary from "cloudinary";
+import dotenv from "dotenv";
+dotenv.config(); // Asegúrate de que esta línea esté primero
 
-export const subirArchivo = async (rutaArchivo) => {
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-    try{
-        const respuesta = await cloudinary.v2.uploader.upload(rutaArchivo);
-    
-        console.log(respuesta)
-        const src = respuesta.secure_url;
-        console.log(src)
-        return src;
+export const subirArchivo = (rutaArchivo,carpeta) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Subir la imagen a la carpeta "fotoPerfil"
+      const resultado = await cloudinary.v2.uploader.upload(rutaArchivo, {
+        folder: carpeta, // Carpeta de fotos de perfil
+      });
 
+      resolve(resultado.secure_url);
     } catch (err) {
-        return new Error(err);
+      reject(err);
     }
+  });
+};
+
+
+export const eliminarArchivo = (NombreID,carpeta) => {
+
+  return new Promise(async (resolve,reject) => {
+    try{
+      cloudinary.uploader.destroy(NombreID,{
+        folder: carpeta
+      });
+      resolve('Archivo Eliminado')
+    } catch (err) {
+      reject(err);
+    }
+  });
 
 }

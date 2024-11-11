@@ -13,7 +13,8 @@ import {
 
 import { validarRol } from "../middlewares/rol-valido.js";
 import { validarID, verificarUsuarioActivo } from "../middlewares/existe-Usuario.js";
-import {verificarCargaDeArchivo} from '../middlewares/verificacionArchivo.js';
+import {cantidadArchivosPermitidos, verificarCargaDeArchivo} from '../middlewares/verificacionArchivo.js';
+import { validarExtensionesPermitidas } from "../middlewares/validarExtensiones.js";
 
 const router = Router();
 
@@ -50,7 +51,10 @@ router.get('/:id',[
 
 //Establecer foto de perfil
 router.put('/:id',[
-    //verificarCargaDeArchivo
+    verificarToken,
+    verificarCargaDeArchivo,
+    cantidadArchivosPermitidos(1),
+    validarExtensionesPermitidas(['jpg','png'])
 ], establecerFotoPerfil);
 
 //Eliminar Usuario

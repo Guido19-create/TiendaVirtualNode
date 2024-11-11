@@ -35,27 +35,19 @@ export const registrar = async (req, res) => {
   res.status(201).json({ usuario });
 };
 
-
-
-
 export const iniciarSesion = async (req, res) => {
   const { correo, password } = req.body;
 
   const usuario = await Usuario.findOne({ correo });
 
-  const id = usuario._id; //Obtengo el id
-
-  //Verificar que el correo exista
-  if (!usuario) {
-    return res.status(401).json({ msg: "Acceso Denegado - correo o la contraseña incorrectos" });
-  }
-
+  
   const passwordGuardada = usuario.password;
-
+  
   //Verificar si las contraseñas son iguales
   const isEqualsPassword = await bcryptjs.compare(password, passwordGuardada);
-
+  
   if (isEqualsPassword) {
+    const id = usuario._id; //Obtengo el id
     //Generar jwt
     const token = jsonwebtoken.sign({ _id: id, correo }, process.env.CLAVE_SECRETA, {
       expiresIn: "1h",
