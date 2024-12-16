@@ -1,9 +1,8 @@
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
-import { Usuario } from "../models/Usuarios.js";
+import { Usuario } from "../models/mongoDB/Usuarios.js";
 import { hashearPass } from "../helpers/hashearPassword.js";
-import { obtenerRol } from "../helpers/asignar-rol.js";
-import { Rol } from "../models/Roles.js"
+import { Rol } from "../models/mongoDB/Roles.js"
 
 export const registrar = async (req, res) => {
   //Extraer los datos

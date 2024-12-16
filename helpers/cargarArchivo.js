@@ -28,9 +28,7 @@ export const eliminarArchivo = (NombreID,carpeta) => {
 
   return new Promise(async (resolve,reject) => {
     try{
-      cloudinary.uploader.destroy(NombreID,{
-        folder: carpeta
-      });
+      await cloudinary.uploader.destroy(`${carpeta}/${NombreID}`);
       resolve('Archivo Eliminado')
     } catch (err) {
       reject(err);

@@ -8,7 +8,8 @@ import {
     eliminarUsuario,
     obtenerUsuariosPaginados, 
     obtenerUsuariosPorId,
-    establecerFotoPerfil} 
+    establecerFotoPerfil,
+    buscarUsuarioPorCorreo} 
     from "../controllers/Usuario.controllers.js";
 
 import { validarRol } from "../middlewares/rol-valido.js";
@@ -42,6 +43,7 @@ router.get('/',[
 //Obtener los usuarios por id --se necesita rol de ADMINISTRADOR
 router.get('/:id',[
     check('id','Esto no es un id de Mongo DB').isMongoId(),
+    resultadoValidaciones,
     validarID,
     verificarToken,
     verificarUsuarioActivo,
@@ -50,7 +52,7 @@ router.get('/:id',[
 ], obtenerUsuariosPorId);
 
 //Establecer foto de perfil
-router.put('/:id',[
+router.put('/',[
     verificarToken,
     verificarCargaDeArchivo,
     cantidadArchivosPermitidos(1),
@@ -66,6 +68,15 @@ router.delete('/:id',[
     validarRol("ADMINISTRADOR"),
     resultadoValidaciones
 ],eliminarUsuario );
+
+
+//Buscar Usuario por correo
+router.get('/correo/:correoUsuario', [
+    verificarToken,
+    verificarUsuarioActivo,
+    validarRol("ADMINISTRADOR"),
+    resultadoValidaciones
+],buscarUsuarioPorCorreo);
 
 
 export { router }

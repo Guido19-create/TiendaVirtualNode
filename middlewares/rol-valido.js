@@ -1,4 +1,4 @@
-import { Usuario } from "../models/Usuarios.js";
+import { Usuario } from "../models/mongoDB/Usuarios.js";
 
 export const validarRol = (rolAValidar) => {
   return async (req, res, next) => {

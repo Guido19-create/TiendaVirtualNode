@@ -1,4 +1,4 @@
-import { Rol } from "../models/Roles.js"
+import { Rol } from "../models/mongoDB/Roles.js"
 
 
 export const obtenerRol = async(rol) => {

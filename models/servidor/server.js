@@ -2,10 +2,12 @@ import express from 'express'
 import dotenv from 'dotenv'
 import path from 'path'
 import {fileURLToPath} from 'url'
-import {router} from '../routers/auth.js'
-import {router as UsuarioRutas}  from '../routers/UsuarioRouters.js';
-import { conexionDB } from '../database/config.js'
+import {router} from '../../routers/auth.js'
+import {router as UsuarioRutas}  from '../../routers/UsuarioRouters.js';
+import {router as ProductoRutas}  from '../../routers/ProductoRouters.js';
+import { conexionDB } from '../../database/config.js'
 import fileUpload from 'express-fileupload';
+import { conectarMySql2 } from '../../database/mySql.config.js'
 
 dotenv.config()
 
@@ -22,7 +24,8 @@ export class Server{
         //Rutas urls de la api
         this.paths = {
             auth:        '/api/auth',
-            crudUsuario: '/api/Usuario'
+            crudUsuario: '/api/Usuario',
+            crudProducto: '/api/Producto'
         }
 
         //Iniciando middlewares
@@ -33,6 +36,7 @@ export class Server{
 
         //Iniciar conexion con la base de datos
         this.conectarDB()
+        //this.conectarBDmySql();
         
     }
 
@@ -41,6 +45,8 @@ export class Server{
     routes(){
         this.app.use(this.paths.auth,router);
         this.app.use(this.paths.crudUsuario,UsuarioRutas);
+        this.app.use(this.paths.crudProducto,ProductoRutas);
+
     }
 
     //Middlewares
@@ -56,6 +62,10 @@ export class Server{
 
     async conectarDB(){
         await conexionDB();
+    }
+
+    async conectarBDmySql(){
+        await conectarMySql2();
     }
 
     //conexion con pa base datos 

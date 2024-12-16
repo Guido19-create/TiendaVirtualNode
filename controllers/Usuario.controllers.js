@@ -1,5 +1,5 @@
 import bcryptjs from "bcryptjs";
-import { Usuario } from "../models/Usuarios.js";
+import { Usuario } from "../models/mongoDB/Usuarios.js";
 import { hashearPass } from "../helpers/hashearPassword.js";
 import { populate } from "dotenv";
 import path from "path";
@@ -102,4 +102,22 @@ export const establecerFotoPerfil = async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: "Error al subir imagen de perfil", error });
   }
+};
+
+
+export const buscarUsuarioPorCorreo = async ( req, res ) => {
+  const {correoUsuario} = req.params;
+
+  const expresionRegular = new RegExp(correoUsuario);
+
+  const resultadosEncontrados = await Usuario.find({correo:expresionRegular});
+
+  if (resultadosEncontrados.length != 0) {
+    return res.status(200).json({
+      resultadosEncontrados:resultadosEncontrados.length,
+      resultados: resultadosEncontrados
+    });
+  }
+
+  return res.status(404).json({resultados: 'No se encontro ninguna coincidencia con ese correo o sus parecidos'});
 };

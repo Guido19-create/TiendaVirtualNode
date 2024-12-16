@@ -1,4 +1,4 @@
-import { Usuario } from "../models/Usuarios.js"
+import { Usuario } from "../models/mongoDB/Usuarios.js"
 
 
 export const existeCorreo = async(correo) => {
