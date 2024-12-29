@@ -49,7 +49,7 @@ export const iniciarSesion = async (req, res) => {
     const id = usuario._id; //Obtengo el id
     //Generar jwt
     const token = jsonwebtoken.sign({ _id: id, correo }, process.env.CLAVE_SECRETA, {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
     return res.status(200).json({ msg: "Usuario logeado correctamente" ,token});
   } else {

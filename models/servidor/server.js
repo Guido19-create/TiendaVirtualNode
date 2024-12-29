@@ -5,6 +5,8 @@ import {fileURLToPath} from 'url'
 import {router} from '../../routers/auth.js'
 import {router as UsuarioRutas}  from '../../routers/UsuarioRouters.js';
 import {router as ProductoRutas}  from '../../routers/ProductoRouters.js';
+import {router as CategoriasRutas}  from '../../routers/categoriaRouters.js';
+import {router as ValoracionesRutas}  from '../../routers/ValoracionRouters.js';
 import { conexionDB } from '../../database/config.js'
 import fileUpload from 'express-fileupload';
 import { conectarMySql2 } from '../../database/mySql.config.js'
@@ -25,7 +27,9 @@ export class Server{
         this.paths = {
             auth:        '/api/auth',
             crudUsuario: '/api/Usuario',
-            crudProducto: '/api/Producto'
+            crudProducto: '/api/Producto',
+            crudCategoria: '/api/Categoria',
+            crudValoracion: '/api/Valoracion'
         }
 
         //Iniciando middlewares
@@ -46,6 +50,8 @@ export class Server{
         this.app.use(this.paths.auth,router);
         this.app.use(this.paths.crudUsuario,UsuarioRutas);
         this.app.use(this.paths.crudProducto,ProductoRutas);
+        this.app.use(this.paths.crudCategoria,CategoriasRutas);
+        this.app.use(this.paths.crudValoracion,ValoracionesRutas);
 
     }
 

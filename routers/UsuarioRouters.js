@@ -2,6 +2,10 @@ import { Router } from "express";
 import { check } from "express-validator";
 import { verificarToken } from "../middlewares/validar-token.js";
 import {resultadoValidaciones} from '../middlewares/resultado-validaciones.js';
+import { validarRol } from "../middlewares/rol-valido.js";
+import { validarID, verificarUsuarioActivo } from "../middlewares/existe-Usuario.js";
+import {cantidadArchivosPermitidos, verificarCargaDeArchivo} from '../middlewares/verificacionArchivo.js';
+import { validarExtensionesPermitidas } from "../middlewares/validarExtensiones.js";
 
 import { 
     actualizarPassword,
@@ -9,19 +13,18 @@ import {
     obtenerUsuariosPaginados, 
     obtenerUsuariosPorId,
     establecerFotoPerfil,
-    buscarUsuarioPorCorreo} 
-    from "../controllers/Usuario.controllers.js";
+    buscarUsuarioPorCorreo
+} from "../controllers/Usuario.controllers.js";
 
-import { validarRol } from "../middlewares/rol-valido.js";
-import { validarID, verificarUsuarioActivo } from "../middlewares/existe-Usuario.js";
-import {cantidadArchivosPermitidos, verificarCargaDeArchivo} from '../middlewares/verificacionArchivo.js';
-import { validarExtensionesPermitidas } from "../middlewares/validarExtensiones.js";
 
 const router = Router();
 
+//Middlewares globales para las rutas del usuario
+router.use(verificarToken);
+router.use(verificarUsuarioActivo);
+
 //cambiar contraseña
 router.post('/updatePassword',[
-    verificarToken,
     check('password','La contraseña tiene que ser un String').isString(),
     check('newPassword','La contraseña tiene que ser un String').isString(),
     check('password','La contraseña es obligatoria').not().isEmpty(),
@@ -33,8 +36,6 @@ router.post('/updatePassword',[
 
 //Obtener los usuarios --se necesita rol de ADMINISTRADOR --apartado de el Dashboard
 router.get('/',[
-    verificarToken,
-    verificarUsuarioActivo,
     validarRol("ADMINISTRADOR"),
     resultadoValidaciones
 ],obtenerUsuariosPaginados);
@@ -45,15 +46,12 @@ router.get('/:id',[
     check('id','Esto no es un id de Mongo DB').isMongoId(),
     resultadoValidaciones,
     validarID,
-    verificarToken,
-    verificarUsuarioActivo,
     validarRol("ADMINISTRADOR"),
     resultadoValidaciones
 ], obtenerUsuariosPorId);
 
 //Establecer foto de perfil
 router.put('/',[
-    verificarToken,
     verificarCargaDeArchivo,
     cantidadArchivosPermitidos(1),
     validarExtensionesPermitidas(['jpg','png'])
@@ -63,8 +61,6 @@ router.put('/',[
 router.delete('/:id',[
     check('id','Esto no es un id de Mongo DB').isMongoId(),
     validarID,
-    verificarToken,
-    verificarUsuarioActivo,
     validarRol("ADMINISTRADOR"),
     resultadoValidaciones
 ],eliminarUsuario );
@@ -72,8 +68,6 @@ router.delete('/:id',[
 
 //Buscar Usuario por correo
 router.get('/correo/:correoUsuario', [
-    verificarToken,
-    verificarUsuarioActivo,
     validarRol("ADMINISTRADOR"),
     resultadoValidaciones
 ],buscarUsuarioPorCorreo);
